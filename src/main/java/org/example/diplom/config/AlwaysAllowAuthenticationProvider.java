@@ -15,12 +15,19 @@ public class AlwaysAllowAuthenticationProvider implements AuthenticationProvider
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        // Пропускаем любого пользователя, игнорируя пароль
-        return new UsernamePasswordAuthenticationToken(
-                username,
-                null, // Пароль не нужен
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_RESIDENT"))
-        );
+        if ("admin".equals(username)) {
+            return new UsernamePasswordAuthenticationToken(
+                    username,
+                    null,
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
+            );
+        } else {
+            return new UsernamePasswordAuthenticationToken(
+                    username,
+                    null,
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_RESIDENT"))
+            );
+        }
     }
 
     @Override

@@ -7,24 +7,43 @@
 <body>
 <div th:replace="~{layout/main :: body(content=~{::main}, title='Счетчики - Система учета услуг ЖКХ')}">
     <main>
-        <h2>Мои счетчики</h2>
-
-        <div th:if="${meters.empty}" class="alert alert-info">
-            У вас нет зарегистрированных счетчиков. Обратитесь к администратору системы.
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Мои счетчики</h2>
+            <a th:href="@{/meters/readings/submit}" class="btn btn-primary">Передать показания</a>
         </div>
 
-        <div th:unless="${meters.empty}" class="row mt-4">
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}">Ошибка</p>
+        </div>
+
+        <div th:if="${info}" class="alert alert-info">
+            <p th:text="${info}">Информация</p>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}">Успешно</p>
+        </div>
+
+        <div th:if="${apartments.empty}" class="alert alert-info">
+            У вас нет зарегистрированных помещений. Обратитесь к администратору системы.
+        </div>
+
+        <div th:unless="${apartments.empty}" class="row mt-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Список счетчиков</h5>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div th:if="${meters.empty}" class="alert alert-info">
+                            У вас нет зарегистрированных счетчиков. Вы можете передать показания через кнопку "Передать показания".
+                        </div>
+                        <div th:unless="${meters.empty}" class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead>
                                 <tr>
                                     <th>Тип счетчика</th>
+                                    <th>Помещение</th>
                                     <th>Серийный номер</th>
                                     <th>Последние показания</th>
                                     <th>Дата</th>
@@ -34,26 +53,28 @@
                                 <tbody>
                                 <tr th:each="meter : ${meters}">
                                     <td th:text="${meter.type.displayName}">Тип счетчика</td>
+                                    <td th:text="${meter.apartment.identifier}">Помещение</td>
                                     <td th:text="${meter.serialNumber}">Серийный номер</td>
                                     <td>
-                                                <span th:if="${!meter.readings.empty}"
-                                                      th:text="${meter.readings[meter.readings.size()-1].value}">
-                                                    Показания
-                                                </span>
-                                        <span th:if="${meter.readings.empty}" class="text-muted">Нет данных</span>
+                                        <span th:if="${meter.readings != null && !meter.readings.empty}"
+                                              th:text="${meter.readings[meter.readings.size()-1].value}">
+                                            Показания
+                                        </span>
+                                        <span th:if="${meter.readings == null || meter.readings.empty}" class="text-muted">Нет данных</span>
                                     </td>
                                     <td>
-                                                <span th:if="${!meter.readings.empty}"
-                                                      th:text="${#temporals.format(meter.readings[meter.readings.size()-1].date, 'dd.MM.yyyy')}">
-                                                    Дата
-                                                </span>
-                                        <span th:if="${meter.readings.empty}" class="text-muted">-</span>
+                                        <span th:if="${meter.readings != null && !meter.readings.empty}"
+                                              th:text="${#temporals.format(meter.readings[meter.readings.size()-1].date, 'dd.MM.yyyy')}">
+                                            Дата
+                                        </span>
+                                        <span th:if="${meter.readings == null || meter.readings.empty}" class="text-muted">-</span>
                                     </td>
                                     <td>
                                         <div class="btn-group">
                                             <a th:href="@{/meters/{id}/readings/add(id=${meter.id})}"
                                                class="btn btn-sm btn-primary">Передать показания</a>
-                                            <a th:href="@{/meters/{id}/readings(id=${meter.id})}"
+                                            <a th:if="${meter.readings != null && !meter.readings.empty}"
+                                               th:href="@{/meters/{id}/readings(id=${meter.id})}"
                                                class="btn btn-sm btn-secondary">История</a>
                                         </div>
                                     </td>

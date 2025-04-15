@@ -9,6 +9,10 @@
     <main>
         <h2>Создание новой заявки</h2>
 
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}">Ошибка</p>
+        </div>
+
         <div class="row mt-4">
             <div class="col-md-8 offset-md-2">
                 <div class="card">
@@ -17,17 +21,21 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/requests/create}" method="post" th:object="${request}">
-                            <input type="hidden" th:field="*{apartment}">
-
                             <div class="mb-3">
-                                <label for="apartment" class="form-label">Помещение:</label>
-                                <input type="text" class="form-control" id="apartment"
-                                       th:value="${request.apartment.identifier + ' (' + request.apartment.address + ')'}" readonly>
+                                <label for="apartment" class="form-label">Выберите помещение:</label>
+                                <select class="form-select" id="apartment" name="apartment.id" required>
+                                    <option th:each="apt : ${apartments}"
+                                            th:value="${apt.id}"
+                                            th:text="${apt.identifier + ' (' + apt.address + ')'}"
+                                            th:selected="${apt.id == request.apartment.id}">
+                                        Квартира №123 (ул. Примерная, д. 1)
+                                    </option>
+                                </select>
                             </div>
 
                             <div class="mb-3">
                                 <label for="description" class="form-label">Описание проблемы:</label>
-                                <textarea class="form-control" id="description" th:field="*{description}"
+                                <textarea class="form-control" id="description" name="description"
                                           rows="5" maxlength="500" required></textarea>
                                 <div class="form-text">Подробно опишите проблему, требующую решения (до 500 символов)</div>
                             </div>

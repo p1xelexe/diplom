@@ -21,20 +21,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authenticationProvider(alwaysAllowAuthenticationProvider)
-                .authorizeRequests(authorize -> authorize
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/webjars/**", "/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard")
+                        .defaultSuccessUrl("/dashboard", true) // Принудительно перенаправлять на dashboard после входа
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
+
+        // Отключаем CSRF для упрощения работы с формами
+        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }

@@ -1,22 +1,87 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: content}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Заявки</title>
+    <meta charset="UTF-8">
+    <title>Заявки - Система учета услуг ЖКХ</title>
 </head>
 <body>
-<div>
-    <h1>Заявки</h1>
-    <div th:if="${error}">
-        <p style="color: red;" th:text="${error}"></p>
-    </div>
-    <div th:if="${apartments.empty}">
-        <p>Квартиры не найдены.</p>
-    </div>
-    <div th:unless="${apartments.empty}">
-        <ul>
-            <li th:each="apartment : ${apartments}" th:text="${apartment.address}"></li>
-        </ul>
-    </div>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Заявки - Система учета услуг ЖКХ')}">
+    <main>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Заявки на обслуживание</h2>
+            <a th:href="@{/requests/create}" class="btn btn-primary">Создать заявку</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}">Ошибка</p>
+        </div>
+
+        <div th:if="${apartments.empty}" class="alert alert-info">
+            <p>У вас нет зарегистрированных помещений.</p>
+            <p>Обратитесь к администратору системы для добавления помещения.</p>
+        </div>
+
+        <div th:unless="${apartments.empty}">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Мои помещения</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="apartment : ${apartments}">
+                            <h6 th:text="${apartment.identifier}">Квартира №123</h6>
+                            <p class="mb-0" th:text="${apartment.address}">Адрес</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Мои заявки</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${requests == null || requests.empty}" class="alert alert-info">
+                        У вас нет активных заявок.
+                    </div>
+                    <div th:unless="${requests == null || requests.empty}" class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Описание</th>
+                                <th>Статус</th>
+                                <th>Дата создания</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="request : ${requests}">
+                                <td th:text="${request.id}">1</td>
+                                <td th:text="${#strings.abbreviate(request.description, 50)}">Описание заявки...</td>
+                                <td>
+                                        <span class="badge"
+                                              th:classappend="${
+                                                request.status.name() == 'NEW' ? 'bg-danger' :
+                                                request.status.name() == 'IN_PROGRESS' ? 'bg-warning' :
+                                                request.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'
+                                              }"
+                                              th:text="${request.status.displayName}">
+                                            Статус
+                                        </span>
+                                </td>
+                                <td th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2025</td>
+                                <td>
+                                    <a th:href="@{/requests/{id}(id=${request.id})}" class="btn btn-sm btn-info">Просмотр</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 </body>
 </html>

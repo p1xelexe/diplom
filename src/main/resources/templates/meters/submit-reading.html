@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Передача показаний - Система учета услуг ЖКХ</title>
+</head>
+<body>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Передача показаний - Система учета услуг ЖКХ')}">
+    <main>
+        <h2>Передача показаний счетчика</h2>
+
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}">Ошибка</p>
+        </div>
+
+        <div th:if="${warning}" class="alert alert-warning">
+            <p th:text="${warning}">Предупреждение</p>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Форма передачи показаний</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/meters/readings/submit}" method="post" th:object="${reading}">
+                            <div class="mb-3">
+                                <label for="apartmentId" class="form-label">Помещение:</label>
+                                <select class="form-select" id="apartmentId" name="apartmentId" required>
+                                    <option value="">Выберите помещение</option>
+                                    <option th:each="apartment : ${apartments}"
+                                            th:value="${apartment.id}"
+                                            th:text="${apartment.identifier + ' (' + apartment.address + ')'}">
+                                        Квартира №123 (ул. Примерная, д. 1)
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="meterType" class="form-label">Тип счетчика:</label>
+                                <select class="form-select" id="meterType" name="meterType" required>
+                                    <option value="">Выберите тип счетчика</option>
+                                    <option th:each="type : ${meterTypes}"
+                                            th:value="${type}"
+                                            th:text="${type.displayName}">
+                                        Тип счетчика
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="value" class="form-label">Показания счетчика:</label>
+                                <input type="number" class="form-control" id="value" th:field="*{value}"
+                                       step="0.01" min="0" required>
+                                <div class="form-text">Введите текущие показания счетчика</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Дата снятия показаний:</label>
+                                <input type="date" class="form-control" id="date" th:field="*{date}" required
+                                       th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/meters}" class="btn btn-secondary">Отмена</a>
+                                <button type="submit" class="btn btn-primary">Передать показания</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
