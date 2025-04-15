@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: content}">
+<head>
+    <title>Счётчики</title>
+</head>
+<body>
+<div>
+    <h1>Счётчики</h1>
+    <div th:if="${error}">
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+    <div th:if="${apartments.empty}">
+        <p>Квартиры не найдены.</p>
+    </div>
+    <div th:unless="${apartments.empty}">
+        <ul>
+            <li th:each="apartment : ${apartments}" th:text="${apartment.address}"></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

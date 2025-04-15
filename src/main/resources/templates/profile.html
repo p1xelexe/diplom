@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль - Система учета услуг ЖКХ</title>
+</head>
+<body>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Профиль - Система учета услуг ЖКХ')}">
+    <main>
+        <h2>Профиль пользователя</h2>
+
+        <div th:if="${param.updated}" class="alert alert-success">
+            Профиль успешно обновлен.
+        </div>
+        <div th:if="${param.passwordChanged}" class="alert alert-success">
+            Пароль успешно изменен.
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Личная информация</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/profile}" method="post" th:object="${user}">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{password}">
+                    <input type="hidden" th:field="*{role}">
+
+                    <div class="mb-3 row">
+                        <label for="fullName" class="col-sm-3 col-form-label">ФИО:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="email" class="col-sm-3 col-form-label">Email:</label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="role" class="col-sm-3 col-form-label">Роль:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="role" th:value="${user.role}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        <a th:href="@{/change-password}" class="btn btn-outline-secondary ms-2">Изменить пароль</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

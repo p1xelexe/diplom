@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход - Система учета услуг ЖКХ</title>
+</head>
+<body>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Вход - Система учета услуг ЖКХ')}">
+    <main>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Вход в систему</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${param.error}" class="alert alert-danger">
+                            Неверный email или пароль.
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success">
+                            Вы успешно вышли из системы.
+                        </div>
+                        <div th:if="${param.registered}" class="alert alert-success">
+                            Регистрация прошла успешно. Теперь вы можете войти в систему.
+                        </div>
+
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Войти</button>
+                            </div>
+                        </form>
+
+                        <div class="mt-3 text-center">
+                            <p>Нет аккаунта? <a th:href="@{/register}">Зарегистрируйтесь</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

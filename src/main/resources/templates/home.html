@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная - Система учета услуг ЖКХ</title>
+</head>
+<body>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Главная - Система учета услуг ЖКХ')}">
+    <main>
+        <div class="jumbotron py-5 bg-light">
+            <div class="container">
+                <h1 class="display-4">Система учета услуг ЖКХ</h1>
+                <p class="lead">Автоматизированная система для учета услуг жилищно-коммунального хозяйства,
+                    подачи показаний счетчиков и оформления заявок на обслуживание.</p>
+                <hr class="my-4">
+                <p>Войдите в систему, чтобы получить доступ к своему личному кабинету.</p>
+                <a class="btn btn-primary btn-lg" th:href="@{/login}" role="button">Войти</a>
+                <a class="btn btn-outline-secondary btn-lg ms-2" th:href="@{/register}" role="button">Регистрация</a>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Показания счетчиков</h5>
+                            <p class="card-text">Удобная передача показаний счетчиков воды, электричества и газа.
+                                История показаний и расчет потребления.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Заявки на обслуживание</h5>
+                            <p class="card-text">Создание заявок на ремонт и обслуживание. Отслеживание статуса
+                                и оперативное реагирование.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Личный кабинет</h5>
+                            <p class="card-text">Управление квартирой, доступ к истории показаний и заявок,
+                                редактирование личной информации.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

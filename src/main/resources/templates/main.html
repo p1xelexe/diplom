@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'Система учета услуг ЖКХ'">Система учета услуг ЖКХ</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+
+    <!-- Пользовательские стили -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<!-- Навигационная панель -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Система учета услуг ЖКХ</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/dashboard}">Главная</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/meters}">Счетчики</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/requests}">Заявки</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/users}">Пользователи</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">Вход</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/register}">Регистрация</a>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false"
+                       sec:authentication="name">Пользователь</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/profile}">Профиль</a></li>
+                        <li><a class="dropdown-item" th:href="@{/change-password}">Сменить пароль</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item" type="submit">Выход</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Основное содержимое -->
+<div class="container mt-4">
+    <!-- Сообщения об ошибках и успешных операциях -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}">Ошибка</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}">Успешно</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Здесь будет размещено содержимое страницы -->
+    <div th:replace="${content}">
+        Содержимое страницы
+    </div>
+</div>
+
+<!-- Подвал -->
+<footer class="bg-light py-3 mt-5">
+    <div class="container text-center">
+        <p class="text-muted mb-0">© 2025 Система учета услуг ЖКХ. Все права защищены.</p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS и зависимости -->
+<script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Пользовательские скрипты -->
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

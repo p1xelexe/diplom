@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Расчет потребления - Система учета услуг ЖКХ</title>
+</head>
+<body>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Расчет потребления - Система учета услуг ЖКХ')}">
+    <main>
+        <h2>Расчет потребления</h2>
+
+        <div class="row mt-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0" th:text="${meter.type.displayName + ' (№ ' + meter.serialNumber + ')'}">
+                            Тип счетчика (серийный номер)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h5>Результат расчета за период:</h5>
+                            <p>
+                                С <strong th:text="${#temporals.format(startDate, 'dd.MM.yyyy')}">01.01.2025</strong>
+                                по <strong th:text="${#temporals.format(endDate, 'dd.MM.yyyy')}">31.01.2025</strong>
+                            </p>
+                            <h4 class="mt-3">
+                                Потребление: <span th:text="${#numbers.formatDecimal(consumption, 1, 2)}">10.0</span>
+                            </h4>
+                        </div>
+
+                        <div class="mt-3">
+                            <a th:href="@{/meters/{id}/readings(id=${meter.id})}" class="btn btn-secondary">
+                                Назад к истории показаний
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявки - Система учета услуг ЖКХ</title>
+</head>
+<body>
+<div th:replace="~{layout/main :: body(content=~{::main}, title='Заявки - Система учета услуг ЖКХ')}">
+    <main>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Заявки на обслуживание</h2>
+            <a th:href="@{/requests/create}" class="btn btn-primary">Создать заявку</a>
+        </div>
+
+        <!-- Фильтрация для сотрудников -->
+        <div class="mb-4" sec:authorize="hasAnyRole('EMPLOYEE', 'ADMIN')">
+            <div class="card">
+                <div class="card-header bg-light">Фильтр заявок</div>
+                <div class="card-body">
+                    <form th:action="@{/requests/filter}" method="get" class="row g-3 align-items-end">
+                        <div class="col-md-10">
+                            <label for="status" class="form-label">Статус заявки:</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="">Все заявки</option>
+                                <option th:each="status : ${statuses}"
+                                        th:value="${status}"
+                                        th:text="${status.displayName}"
+                                        th:selected="${selectedStatus == status}">
+                                    Статус
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Применить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${requests == null || requests.empty}" class="alert alert-info">
+            Заявок не найдено.
+        </div>
+
+        <div th:unless="${requests == null || requests.empty}" class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Список заявок</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>Помещение</th>
+                                    <th>Описание</th>
+                                    <th>Статус</th>
+                                    <th>Дата создания</th>
+                                    <th>Действия</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="request : ${requests}">
+                                    <td th:text="${request.id}">1</td>
+                                    <td th:text="${request.apartment.identifier}">Кв. 123</td>
+                                    <td th:text="${#strings.abbreviate(request.description, 50)}">Описание заявки...</td>
+                                    <td>
+                                                <span class="badge"
+                                                      th:classappend="${
+                                                        request.status.name() == 'NEW' ? 'bg-danger' :
+                                                        request.status.name() == 'IN_PROGRESS' ? 'bg-warning' :
+                                                        request.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'
+                                                      }"
+                                                      th:text="${request.status.displayName}">
+                                                    Статус
+                                                </span>
+                                    </td>
+                                    <td th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2025</td>
+                                    <td>
+                                        <a th:href="@{/requests/{id}(id=${request.id})}" class="btn btn-sm btn-info">Просмотр</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
